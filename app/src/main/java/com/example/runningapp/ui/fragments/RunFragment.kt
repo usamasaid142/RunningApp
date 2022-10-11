@@ -4,21 +4,27 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.runningapp.R
 import com.example.runningapp.TrackingUtilities
+import com.example.runningapp.alertdialog.Alert
 import com.example.runningapp.databinding.FragmentRunBinding
 import com.example.runningapp.ui.viewmodels.MainViewmodel
-import com.example.runningapp.utils.Constans.request_code_location_permission
+import com.example.runningapp.utils.Constants.request_code_location_permission
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+
 
 @AndroidEntryPoint
 class RunFragment : Fragment(),EasyPermissions.PermissionCallbacks {
@@ -37,7 +43,13 @@ class RunFragment : Fragment(),EasyPermissions.PermissionCallbacks {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         inintbutton()
-        requestPermission()
+       // requestPermission()
+        if(isLocationPermissionAllowed()){
+
+        }else{
+            requestLocationPermission()
+        }
+
     }
 
     fun inintbutton(){
@@ -55,7 +67,7 @@ class RunFragment : Fragment(),EasyPermissions.PermissionCallbacks {
             EasyPermissions.hasPermissions(
                 requireContext(),
                 "You need to accept location for using app",
-                request_code_location_permission.toString()  ,
+                request_code_location_permission.toString(),
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
 
@@ -111,5 +123,67 @@ class RunFragment : Fragment(),EasyPermissions.PermissionCallbacks {
             return true
         return false
     }
+
+    private fun requestLocationPermission() {
+
+        if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),Manifest.permission.ACCESS_FINE_LOCATION))
+        {
+
+            // فى حالة رفض اول مره يعمل برمشن
+            // explain why you need the permission
+            // عمل بوب لتوضيح سبب البرمش
+            //  ثم طلب البرمشن
+
+            Alert.showMessage(
+                requireContext(), R.string.weneedpermissiontoaccesslocation, R.string.worning, true, R.string.ok,
+            ) { p0, _ ->
+                p0?.dismiss()
+                requestPermissionLauncher.launch( arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,))
+ //               requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+
+
+        }else
+        {
+
+            // request permission
+
+            requestPermissionLauncher.launch( arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
+                ))
+            //requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+
+        }
+    }
+
+        val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+
+            val granted = permissions.entries.all {
+                it.value == true
+            }
+            permissions.entries.forEach {
+                if (it.value) {
+                    // Permission is granted. Continue the action or workflow in your
+                    // app.
+                    Toast.makeText(requireContext(),"good",Toast.LENGTH_LONG).show()
+
+                }else {
+                    // Explain to the user that the feature is unavailable because the
+                    // features requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                    Toast.makeText(requireContext(),"you can not use this app",Toast.LENGTH_LONG).show()
+                }
+            }
+
+                }
+
+
+
+
+
 
 }

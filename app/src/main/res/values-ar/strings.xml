@@ -4,4 +4,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcomepleaseenternameandweight">ادخل الاسم والوزن</string>
     <string name="runingapp">Runing App</string>
+
+    <string name="weneedpermissiontoaccesslocation">We need your Permission to accsess location</string>
+    <string name="worning">Worning</string>
+    <string name="ok">OK</string>
 </resources>

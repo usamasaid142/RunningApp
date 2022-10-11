@@ -88,4 +88,5 @@ dependencies {
     // Easy permission
     // For developers using AndroidX in their applications
     implementation 'pub.devrel:easypermissions:3.0.0'
+
 }

@@ -6,5 +6,7 @@
     <string name="welcomepleaseenternameandweight">Welcome Please Enter your Name and Weight</string>
     <string name="runingapp">Runing App</string>
 
-
+    <string name="weneedpermissiontoaccesslocation">We need your Permission to accsess location</string>
+    <string name="worning">Worning</string>
+    <string name="ok">OK</string>
 </resources>
